@@ -15,15 +15,37 @@ class ProductList with ChangeNotifier {
     notifyListeners();
   }
 
-  void addProductFromData(Map<String, Object> data) {
-    final newProduct = Product(
-      id: Random().nextDouble().toString(),
+  void updateProduct(Product product) {
+    int index = _items.indexWhere((p) => p.id == product.id);
+    if (index >= 0) {
+      _items[index] = product;
+      notifyListeners();
+    }
+  }
+
+  void deleteProduct(Product product) {
+    int index = _items.indexWhere((p) => p.id == product.id);
+    if (index >= 0) {
+      _items.removeWhere((p) => p.id == product.id);
+      notifyListeners();
+    }
+  }
+
+  void saveProductFromData(Map<String, Object> data) {
+    bool hasId = data['id'] != null;
+    final product = Product(
+      id: hasId ? data['id'] as String : Random().nextDouble().toString(),
       name: data['name'] as String,
       description: data['description'] as String,
       imageUrl: data['imageUrl'] as String,
       price: data['price'] as double,
     );
-    addProduct(newProduct);
+
+    if (hasId) {
+      updateProduct(product);
+    } else {
+      addProduct(product);
+    }
   }
 
   int get itemsCount {

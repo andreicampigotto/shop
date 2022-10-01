@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop/models/product.dart';
 import '../models/product_list.dart';
 
 class ProductFormPage extends StatefulWidget {
@@ -23,6 +24,25 @@ class _ProductFormPageState extends State<ProductFormPage> {
   void initState() {
     super.initState();
     _imageUrlFocus.addListener(updateImage);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_formData.isEmpty) {
+      final args = ModalRoute.of(context)?.settings.arguments;
+
+      if (args != null) {
+        final product = args as Product;
+        _formData['id'] = product.id;
+        _formData['name'] = product.name;
+        _formData['price'] = product.price;
+        _formData['description'] = product.description;
+        _formData['imageUrl'] = product.imageUrl;
+
+        _imageUrlController.text = product.imageUrl;
+      }
+    }
   }
 
   @override
@@ -57,7 +77,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
     Provider.of<ProductList>(
       context,
       listen: false,
-    ).addProductFromData(_formData);
+    ).saveProductFromData(_formData);
     Navigator.of(context).pop();
   }
 
@@ -78,6 +98,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _formData['name']?.toString(),
                 decoration: const InputDecoration(
                   labelText: 'Nome',
                 ),
@@ -100,6 +121,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 },
               ),
               TextFormField(
+                initialValue: _formData['price']?.toString(),
                 decoration: const InputDecoration(labelText: 'Preço'),
                 focusNode: _priceFocus,
                 textInputAction: TextInputAction.next,
@@ -127,6 +149,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 },
               ),
               TextFormField(
+                initialValue: _formData['description']?.toString(),
                 decoration: const InputDecoration(labelText: 'Descrição'),
                 focusNode: _descriptionFocus,
                 keyboardType: TextInputType.multiline,
