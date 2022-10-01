@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop/models/product.dart';
-import 'package:shop/models/product_list.dart';
-import 'package:shop/utils/app_routes.dart';
+import '../models/product.dart';
+import '../models/product_list.dart';
+import '../utils/app_routes.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;
@@ -39,8 +39,28 @@ class ProductItem extends StatelessWidget {
               color: Theme.of(context).errorColor,
             ),
             onPressed: () {
-              Provider.of<ProductList>(context, listen: false)
-                  .deleteProduct(product);
+              showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Excluir produto'),
+                  content: const Text('Tem certeza que deseja excluir?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('Nāo'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text('Sim'),
+                    ),
+                  ],
+                ),
+              ).then((value) {
+                if (value ?? false) {
+                  Provider.of<ProductList>(context, listen: false)
+                      .deleteProduct(product);
+                }
+              });
             },
           )
         ]),
