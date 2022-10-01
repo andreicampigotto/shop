@@ -12,12 +12,12 @@ class CounterPage extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as Product;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Exemplo'),
+        title: const Text('Exemplo'),
       ),
       body: Column(children: [
         IconButton(
           onPressed: () {},
-          icon: Icon(Icons.add),
+          icon: const Icon(Icons.add),
         )
       ]),
     );

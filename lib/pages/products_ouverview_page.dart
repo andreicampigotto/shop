@@ -8,8 +8,8 @@ import '../models/cart.dart';
 import '../widgets/product_grid.dart';
 
 enum FilterOptions {
-  Favorite,
-  All,
+  favorite,
+  all,
 }
 
 class ProductsOverviewPage extends StatefulWidget {
@@ -26,23 +26,23 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minha Loja'),
+        title: const Text('Minha Loja'),
         actions: [
           PopupMenuButton(
-            icon: Icon(Icons.more_vert_outlined),
+            icon: const Icon(Icons.more_vert_outlined),
             itemBuilder: (_) => [
               const PopupMenuItem(
                 child: Text('Favoritos'),
-                value: FilterOptions.Favorite,
+                value: FilterOptions.favorite,
               ),
               const PopupMenuItem(
                 child: Text('Todos'),
-                value: FilterOptions.All,
+                value: FilterOptions.all,
               ),
             ],
             onSelected: (FilterOptions selectedValue) {
               setState(() {
-                if (selectedValue == FilterOptions.Favorite) {
+                if (selectedValue == FilterOptions.favorite) {
                   _showFavoriteOnly = true;
                 } else {
                   _showFavoriteOnly = false;
@@ -65,7 +65,7 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
         ],
       ),
       body: ProductGrid(_showFavoriteOnly),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
     );
   }
 }

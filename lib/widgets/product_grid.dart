@@ -21,11 +21,11 @@ class ProductGrid extends StatelessWidget {
         showFavoriteOnly ? provider.favoriteItems : provider.items;
 
     return GridView.builder(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       itemCount: loadedProducts.length,
       itemBuilder: (context, i) => ChangeNotifierProvider.value(
         value: loadedProducts[i],
-        child: ProductGridItem(),
+        child: const ProductGridItem(),
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,

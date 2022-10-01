@@ -14,17 +14,17 @@ class ProductsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gerenciar produtos'),
+        title: const Text('Gerenciar produtos'),
         actions: [
           IconButton(
-            icon: Icon(Icons.add_outlined),
+            icon: const Icon(Icons.add_outlined),
             onPressed: () {
               Navigator.of(context).pushNamed(AppRoutes.PRODUCT_FORM);
             },
           )
         ],
       ),
-      drawer: AppDrawer(),
+      drawer: const AppDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView.builder(

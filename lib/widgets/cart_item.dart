@@ -24,7 +24,7 @@ class CartItemWidget extends StatelessWidget {
           size: 40,
         ),
         alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           right: 16,
         ),
         margin: const EdgeInsets.only(
@@ -37,20 +37,20 @@ class CartItemWidget extends StatelessWidget {
         return showDialog<bool>(
             context: context,
             builder: (ctx) => AlertDialog(
-                  title: Text('Tem certeza?'),
-                  content: Text('Deseja remover o item do carrinho?'),
+                  title: const Text('Tem certeza?'),
+                  content: const Text('Deseja remover o item do carrinho?'),
                   actions: [
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(false);
                       },
-                      child: Text('Nāo'),
+                      child: const Text('Nāo'),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(true);
                       },
-                      child: Text('Sim'),
+                      child: const Text('Sim'),
                     ),
                   ],
                 ));

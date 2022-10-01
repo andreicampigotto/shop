@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:shop/models/product.dart';
+import 'package:provider/provider.dart';
+import '../models/product_list.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
@@ -39,22 +38,34 @@ class _ProductFormPageState extends State<ProductFormPage> {
     setState(() {});
   }
 
+  bool isValidImageUrl(String url) {
+    bool isValidUrl = Uri.tryParse(url)?.hasAbsolutePath ?? false;
+    bool endsWithFile = url.toLowerCase().endsWith('.png') ||
+        url.toLowerCase().endsWith('.jpg') ||
+        url.toLowerCase().endsWith('.jpeg');
+
+    return isValidUrl && endsWithFile;
+  }
+
   void _submitForm() {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) return;
+
     _formKey.currentState?.save();
-    final newProduct = Product(
-      id: Random().nextDouble().toString(),
-      name: _formData['name'] as String,
-      description: _formData['description'] as String,
-      imageUrl: _formData['imageUrl'] as String,
-      price: _formData['price'] as double,
-    );
+
+    Provider.of<ProductList>(
+      context,
+      listen: false,
+    ).addProductFromData(_formData);
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Adicionar novo produto'),
+        title: const Text('Adicionar novo produto'),
         actions: [
           IconButton(
               onPressed: _submitForm, icon: const Icon(Icons.save_outlined))
@@ -67,25 +78,54 @@ class _ProductFormPageState extends State<ProductFormPage> {
           child: ListView(
             children: [
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Nome'),
+                decoration: const InputDecoration(
+                  labelText: 'Nome',
+                ),
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocus);
                 },
                 onSaved: (name) => _formData['nome'] = name ?? '',
+                validator: (_name) {
+                  final name = _name ?? '';
+                  if (name.trim().isEmpty) {
+                    return 'Nome obrigatório';
+                  }
+
+                  if (name.trim().length < 2) {
+                    return 'Nome precisa ter no minimo 2 letras';
+                  }
+
+                  return null;
+                },
               ),
               TextFormField(
-                  decoration: const InputDecoration(labelText: 'Preço'),
-                  focusNode: _priceFocus,
-                  textInputAction: TextInputAction.next,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  onFieldSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_descriptionFocus);
-                  },
-                  onSaved: (price) =>
-                      _formData['price'] = double.parse(price ?? '0')),
+                decoration: const InputDecoration(labelText: 'Preço'),
+                focusNode: _priceFocus,
+                textInputAction: TextInputAction.next,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_descriptionFocus);
+                },
+                onSaved: (price) =>
+                    _formData['price'] = double.parse(price ?? '0'),
+                validator: (_price) {
+                  final priceString = _price ?? '';
+                  final price = double.tryParse(priceString) ?? -1;
+
+                  if (priceString.trim().isEmpty) {
+                    return 'Preço obrigatório';
+                  }
+
+                  if (price <= 0) {
+                    return 'Informe um preço valido';
+                  }
+
+                  return null;
+                },
+              ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Descrição'),
                 focusNode: _descriptionFocus,
@@ -93,6 +133,17 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 maxLines: 3,
                 onSaved: (description) =>
                     _formData['description'] = description ?? '',
+                validator: (_description) {
+                  final description = _description ?? '';
+                  if (description.trim().isEmpty) {
+                    return 'Descriçāo obrigatória';
+                  }
+
+                  if (description.trim().length < 10) {
+                    return 'Nome precisa ter no minimo 10 caracteres';
+                  }
+                  return null;
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -108,6 +159,13 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       onFieldSubmitted: (_) => _submitForm(),
                       onSaved: (imageUrl) =>
                           _formData['imageUrl'] = imageUrl ?? '',
+                      validator: (_imageUrl) {
+                        final imageUrl = _imageUrl ?? '';
+                        if (!isValidImageUrl(imageUrl)) {
+                          return 'Informe uma Url valida';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   Container(
@@ -122,7 +180,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     ),
                     alignment: Alignment.center,
                     child: _imageUrlController.text.isEmpty
-                        ? Text('Informe a Url')
+                        ? const Text('Informe a Url')
                         : FittedBox(
                             child: Image.network(_imageUrlController.text),
                             fit: BoxFit.cover,

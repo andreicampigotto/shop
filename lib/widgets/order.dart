@@ -37,7 +37,7 @@ class _OrderWidgetState extends State<OrderWidget> {
           ),
           if (_expanded)
             Container(
-              padding: EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 4,
               ),
@@ -50,12 +50,12 @@ class _OrderWidgetState extends State<OrderWidget> {
                       children: [
                         Text(
                           product.name,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           '${product.quantity}x R\$ ${product.price}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             color: Colors.grey,
                           ),
