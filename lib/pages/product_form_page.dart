@@ -132,7 +132,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       onFieldSubmitted: (_) {
                         FocusScope.of(context).requestFocus(_priceFocus);
                       },
-                      onSaved: (name) => _formData['nome'] = name ?? '',
+                      onSaved: (name) => _formData['name'] = name ?? '',
                       validator: (_name) {
                         final name = _name ?? '';
                         if (name.trim().isEmpty) {
