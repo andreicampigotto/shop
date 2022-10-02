@@ -13,6 +13,8 @@ enum FilterOptions {
 }
 
 class ProductsOverviewPage extends StatefulWidget {
+  const ProductsOverviewPage({super.key});
+
   @override
   State<ProductsOverviewPage> createState() => _ProductsOverviewPageState();
 }
@@ -32,12 +34,12 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
             icon: const Icon(Icons.more_vert_outlined),
             itemBuilder: (_) => [
               const PopupMenuItem(
-                child: Text('Favoritos'),
                 value: FilterOptions.favorite,
+                child: Text('Favoritos'),
               ),
               const PopupMenuItem(
-                child: Text('Todos'),
                 value: FilterOptions.all,
+                child: Text('Todos'),
               ),
             ],
             onSelected: (FilterOptions selectedValue) {

@@ -18,11 +18,6 @@ class CartItemWidget extends StatelessWidget {
       direction: DismissDirection.endToStart,
       background: Container(
         color: Theme.of(context).errorColor,
-        child: Icon(
-          Icons.delete_outline,
-          color: Colors.white70,
-          size: 40,
-        ),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(
           right: 16,
@@ -31,6 +26,11 @@ class CartItemWidget extends StatelessWidget {
           top: 8,
           bottom: 0,
           right: 16,
+        ),
+        child: const Icon(
+          Icons.delete_outline,
+          color: Colors.white70,
+          size: 40,
         ),
       ),
       confirmDismiss: (_) {

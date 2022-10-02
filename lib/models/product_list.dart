@@ -1,26 +1,55 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import '../models/product.dart';
 import '../data/DAMMY_DATA.dart';
 
 class ProductList with ChangeNotifier {
   final List<Product> _items = DAMMY_PRODUCTS;
+  final _baseUrl = "https://shop-68d91-default-rtdb.firebaseio.com";
 
   List<Product> get items => [..._items];
   List<Product> get favoriteItems =>
       _items.where((prod) => prod.isFavorite).toList();
 
-  void addProduct(Product product) {
-    _items.add(product);
-    notifyListeners();
+  Future<void> addProduct(Product product) {
+    final future = http.post(
+      Uri.parse('$_baseUrl/products.json'),
+      body: jsonEncode(
+        {
+          "name": product.name,
+          "price": product.price,
+          "description": product.description,
+          "imageUrl": product.imageUrl,
+          "isFavorite": product.isFavorite,
+        },
+      ),
+    );
+
+    return future.then<void>((response) {
+      final id = jsonDecode(response.body)['name'];
+      _items.add(
+        Product(
+          id: id,
+          name: product.name,
+          description: product.description,
+          imageUrl: product.imageUrl,
+          price: product.price,
+          isFavorite: product.isFavorite,
+        ),
+      );
+      notifyListeners();
+    }).then((value) => null);
   }
 
-  void updateProduct(Product product) {
+  Future<void> updateProduct(Product product) {
     int index = _items.indexWhere((p) => p.id == product.id);
     if (index >= 0) {
       _items[index] = product;
       notifyListeners();
     }
+    return Future.value();
   }
 
   void deleteProduct(Product product) {
@@ -31,7 +60,7 @@ class ProductList with ChangeNotifier {
     }
   }
 
-  void saveProductFromData(Map<String, Object> data) {
+  Future<void> saveProductFromData(Map<String, Object> data) {
     bool hasId = data['id'] != null;
     final product = Product(
       id: hasId ? data['id'] as String : Random().nextDouble().toString(),
@@ -42,9 +71,9 @@ class ProductList with ChangeNotifier {
     );
 
     if (hasId) {
-      updateProduct(product);
+      return updateProduct(product);
     } else {
-      addProduct(product);
+      return addProduct(product);
     }
   }
 
